@@ -8,10 +8,11 @@ import os
 import requests
 
 directory = "D:\\2005"
+not_valid_files = []
+all_files = []
 
 def main():
-    # first of all, get al files recursively
-    all_files = []
+    # first of all, get al files recursively    
     for filename in os.listdir(directory):
         if os.path.isdir(os.path.join(directory, filename)):
             # decode special characters in spanish
@@ -19,10 +20,8 @@ def main():
             temp_files = recursive_get_files(folder)
             print "Dir: {}, files {}".format(folder.encode("utf-8"), len(temp_files))
             all_files += temp_files
-    
-#    for item in all_files:
-#        print item
 
+# get files from child folders exploring recursively form a given location by param
 def recursive_get_files(location):
     file_list = []
     if (os.path.isdir(location)):
@@ -38,8 +37,16 @@ def recursive_get_files(location):
 
 # function to filter the 
 def addItem(file_list, item):
-    allowed_files = [ "jpg", "png", "jpeg", "avi", "mp4", "mpeg", "mov" ""]
-    if not item.endswith('.db') and not item.endswith(".zip") and not item.endswith(".pdf"):
+    allowed_files = ["jpg", "png", "jpeg", "avi", "mp4", "mpeg", "mpg", "mov"]
+    allowed_files += map(lambda x: x.upper(), allowed_files) # add same extensions uppercase
+
+    if item.endswith(tuple(allowed_files)):
         file_list.append(item)
+    else:
+        not_valid_files.append(item)
 
 main()
+
+print "\nNot allowed files (extension invalid):"
+for item in not_valid_files:
+    print item
